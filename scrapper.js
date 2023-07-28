@@ -1,6 +1,6 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 
 const { processors, motherboard } = require('./monitoring')
 
@@ -22,7 +22,11 @@ async function getDataWithCheerio(storeData) {
 async function getDataWithPuppeteer(storeData) {
     try {
         // Inicializar o navegador
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch(
+            {
+                executablePath: 'C:\\Users\\Guilherme\\chrome\\win64-115.0.5790.102\\chrome-win64\\chrome.exe',
+            }
+        );
 
         // Abrir uma nova página
         const page = await browser.newPage();
@@ -33,14 +37,18 @@ async function getDataWithPuppeteer(storeData) {
         // Executar ações de scraping aqui
         // Por exemplo, extrair o título da página:
         const pageTitle = await page.title();
-        console.log('Título da página:', pageTitle);
+
+        await page.evaluate(() => {
+            const price = document.querySelector('.priceCard')
+            console.log(price)
+        })
 
         // Fechar o navegador
     } catch (error) {
         // Lidar com erros
         console.error('Ocorreu um erro:', error);
     } finally {
-        console.log('Finalizado')
+        console.log('Finalizando...')
         await browser.close();
     }
 }
