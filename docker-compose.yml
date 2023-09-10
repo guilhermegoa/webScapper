@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  webscraper:
+    build:
+      context: .  # Use the current directory as the build context
+      dockerfile: Dockerfile  # Use the Dockerfile in the current directory
+    image: webscraper:latest
+    container_name: webscraper
+    restart: always
+  
+  
+    
