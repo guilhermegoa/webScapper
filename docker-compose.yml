@@ -4,10 +4,9 @@ services:
   webscraper:
     build:
       context: .  # Use the current directory as the build context
-      dockerfile: Dockerfile  # Use the Dockerfile in the current directory
-    image: webscraper:latest
+      dockerfile: docker/Dockerfile  # Use the Dockerfile in the current directory
+    image: guilhermeolii/webscrapper-pc:latest
     container_name: webscraper
     restart: always
-  
-  
-    
+    env_file:
+      - docker/docker.env

@@ -18,7 +18,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+# RUN npm install
 
 # Copy the JavaScript code into the container
 COPY . .

@@ -31,12 +31,10 @@ const main = async () => {
     const urlGabinete3 = 'https://www.kabum.com.br/produto/364998/gabinete-gamer-nzxt-h7-preto-mid-tower-lateral-de-vidro-temperado-atx-sem-fonte-2-coolers-cm-h71bb-01'
     const urlGabinete4 = 'https://www.kabum.com.br/produto/415513/gabinete-nzxt-h7-elite-rgb-mid-tower-vidro-lateral-preto'
 
-    // monitorarPreco(urlGabinete1, selectorKabum, subSelectorKabum, product3)
-    // monitorarPreco(urlGabinete2, selectorKabum, subSelectorKabum, product3)
-    // monitorarPreco(urlGabinete3, selectorKabum, subSelectorKabum, product3)
-    // monitorarPreco(urlGabinete4, selectorKabum, subSelectorKabum, product3)
-
-
+    monitorarPreco(urlGabinete1, selectorKabum, subSelectorKabum, product3, 80000)
+    monitorarPreco(urlGabinete2, selectorKabum, subSelectorKabum, product3, 100000)
+    monitorarPreco(urlGabinete3, selectorKabum, subSelectorKabum, product3, 120000)
+    monitorarPreco(urlGabinete4, selectorKabum, subSelectorKabum, product3, 140000)
 }
 
 main()

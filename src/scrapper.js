@@ -2,19 +2,11 @@ const puppeteer = require('puppeteer')
 const { setInterval } = require('timers')
 
 const { sendMessage } = require('./sendMessageWpp')
+const { puppeteerConfig, to } = require('./vars')
+
 
 const obterPreco = async (url, selector, subSelector) => {
-    //LOCAL
-    // const browser = await puppeteer.launch({ headless: true })
-
-    //DOCKER
-    const browser = await puppeteer.launch({
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox'
-        ],
-        executablePath: '/usr/bin/chromium-browser'
-    })
+    const browser = await puppeteer.launch(puppeteerConfig)
 
     const page = await browser.newPage()
     await page.goto(url)
@@ -35,36 +27,36 @@ const monitorarPreco = async (url, selector, subSelector, productName, start) =>
     let ultimoPreco = null
 
     const delayedExecution = async () => {
-        const preco = await obterPreco(url, selector, subSelector)
+        setTimeout(async () => {
+            const preco = await obterPreco(url, selector, subSelector)
 
-        if (preco !== null) {
-            const me = '5531984733922@c.us'
-            const message = `O preço atual do ${productName} é: ${preco} \n\n${url}`
+            if (preco !== null) {
+                const message = `O preço atual do ${productName} é: ${preco} \n\n${url}`
 
-            console.log(message)
+                console.log(message)
 
-            const precoNum = parseFloat(preco.replace("R$", "").replace(".", "").replace(",", "."))
+                const precoNum = parseFloat(preco.replace("R$", "").replace(".", "").replace(",", "."))
 
-            if (ultimoPreco === null || precoNum < ultimoPreco) {
-                if (ultimoPreco !== null) {
-                    const messageLowerPrice = `O preço do ${productName} caiu! Agora está custando ${preco} \n\n${url}`
-                    console.log(messageLowerPrice)
-                    sendMessage(me, messageLowerPrice)
+                if (ultimoPreco === null || precoNum < ultimoPreco) {
+                    if (ultimoPreco !== null) {
+                        const messageLowerPrice = `O preço do ${productName} caiu! Agora está custando ${preco} \n\n${url}`
+                        console.log(messageLowerPrice)
+                        sendMessage(to, messageLowerPrice)
 
+                    }
+
+                    sendMessage(to, message)
+                    ultimoPreco = precoNum
                 }
+            } else {
+                const messageError = `Não foi possível obter o preço do ${productName}.`
 
-                sendMessage(me, message)
-                ultimoPreco = precoNum
+                console.log(messageError)
+                sendMessage(to, messageError)
             }
-        } else {
-            const messageError = `Não foi possível obter o preço do ${productName}.`
 
-            console.log(messageError)
-            sendMessage(me, messageError)
-        }
+        }, start)
     }
-
-    setTimeout(delayedExecution, start);
 
     // Set up an interval for subsequent executions
     setInterval(delayedExecution, 3600000); // 1-hour interval

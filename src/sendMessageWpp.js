@@ -1,23 +1,11 @@
 const qrcode = require('qrcode-terminal')
 const { Client, LocalAuth } = require('whatsapp-web.js')
 
+const { puppeteerConfig, to } = require('./vars')
 
-//LOCAL
-// const client = new Client({
-//     puppeteerOptions,
-//     authStrategy: new LocalAuth()
-// })
-
-
-//DOCKER
 const client = new Client({
-    puppeteer: {
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox'
-        ],
-        executablePath: '/usr/bin/chromium-browser'
-    },
+    authStrategy: new LocalAuth(),
+    puppeteer: puppeteerConfig
 })
 
 function consoleLog(message) {
@@ -40,20 +28,26 @@ async function sendMessage(to, message) {
 
 client.on('qr', qr => {
     qrcode.generate(qr, { small: true })
+    consoleLog(`to: ${to}\npuppeteerConfig: ${puppeteerConfig}`)
 })
 
 client.on('ready', () => {
-    console.log('Client is ready!')
-    sendMessage('5531984733922@c.us', 'Client is ready!')
+    consoleLog('Client is ready!')
+    sendMessage(to, 'Client is ready!')
 })
 
 client.on('message_create', message => {
-    const me = '5531984733922@c.us'
-
     if (message.body == 'status') {
         const response = 'Funcionando'
         consoleLog(response)
-        sendMessage(me, response)
+        sendMessage(to, response)
+        return
+    }
+
+    if (message.body == 'me') {
+        const response = `My contact: ${message.from}`
+        consoleLog(response)
+        sendMessage(to, response)
         return
     }
 })
